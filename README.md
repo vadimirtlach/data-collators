@@ -1,40 +1,35 @@
-# data-collators
+<img src="assets/pretraining.png">
 
-### Masked Language Modeling
+## pretraining
 
-1. Select a portion of the tokens.
-2. Replace 80% of the selected tokens with a special [MASK] token.
-3. Randomly replace 10% of the selected tokens with words from the vocabulary.
-4. Leave the last 10% of the selected tokens unchanged.
-5. Assign an ignore index value to the unmasked tokens, since the loss will only be computed on the masked tokens.
+The pretraining library is a powerful tool for pretraining Language Models (LMs). It offers a lightweight, flexible, and high-quality API that is easy to use for researchers and developers. With a wide range of pretraining techniques available, including Masked Language Modeling, Replaced Token Detection, and Span Masking, the library offers excellent flexibility for customizing pretraining methods to specific use cases. This makes it an ideal solution for anyone looking to develop state-of-the-art language models for natural language processing tasks.
 
-### Replaced Token Detection
+The pretraining library is backed by modern frameworks such as PyTorch, HuggingFace Transformers, and PyTorch Lightning. This ensures that the latest techniques and advancements in deep learning are integrated into the library's functionality. Additionally, the PyTorch backend provides excellent performance and scalability, making it suitable for large-scale pretraining tasks. 
 
-1. Choose a specific portion of the tokens and replace them with randomly selected words from the vocabulary.
-2. Create binary labels to indicate whether each token was changed or not, using 0 for not changed and 1 for changed.
+Overall, the pretraining library is a comprehensive and efficient solution for pretraining Language Models with advanced techniques.
 
-### Span Masking
-1. A subset of tokens is selected from a given sequence by iteratively sampling spans of text until a certain masking budget (e.g. 15% of the original sequence) has been spent.
-2. Masked Language Modeling is applied to the selected subset of tokens.
+## Getting started
+...
 
-### TO-DO
+## Installation
+...
 
-#### Tasks
+## Examples
+...
 
-- [ ] Additional parameters for Masked Language Modeling: https://arxiv.org/abs/2202.08005
-- [ ] Alternatives for Masked Language Modeling: https://arxiv.org/abs/2109.01819
+## TODO
+- [ ] HuggingFace Transformers Data Collators wrappers
+- [ ] Extend set of hyperparameters for Masked Language - [ ] Modeling: https://arxiv.org/abs/2202.08005
 - [ ] Permutation Language Modeling
 - [ ] Whole Word Masking
 - [ ] Translation Language Modeling
-- [ ] Causal Language Modeling
-
-#### API
-- [ ] Access developers to some functionalities (e.g masking, choosing tokens with probability, etc.) through utilities.
-- [ ] Make writing custom pre-training techniques more easily. 
+- [ ] Utilities for Causal Language Modeling
 - [ ] Compose
-- [ ] Apply method
-
-
-#### Documentation
-- [ ] Include documentation strings for both the classes and functions.
-- [ ] Demonstrate the usage of data collators for various tasks.
+- [ ] Ready scripts for pretraining 
+- [ ] Models
+- [ ] Automatic sequences detection
+- [ ] Make writing custom pretraining techniques more easily: provide useful utilities and a better interface.
+- [ ] Types checking and better exceptions' descriptions.
+- [ ] Tests
+- [ ] Write docs-strings in code. 
+- [ ] Examples of usage for various tasks: Named Entity Recognition, Seq2Seq, Text Generation, etc.  

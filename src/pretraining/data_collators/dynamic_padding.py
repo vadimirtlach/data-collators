@@ -5,24 +5,32 @@ from .data_collator import DataCollator
 from .utilities import pad_sequence
 
 
-class DynamicPaddingDataCollator(DataCollator):
-    """
-    TODO:
-    auto detection
-    """
-    
+class DynamicPaddingDataCollator(DataCollator):    
     def __init__(self, 
                  padding_keys: List[str], 
                  padding_values: List[str], 
                  padding_side: str = "right", 
-                 pad_to_multiple_of: Optional[int] = None):
+                 pad_to_multiple_of: Optional[int] = None,
+                 ignore_missing_keys: bool = True,
+                ):
         super().__init__()
         self.padding_keys = padding_keys
         self.padding_values = padding_values
         self.padding_side = padding_side
         self.pad_to_multiple_of = pad_to_multiple_of
+        self.ignore_missing_keys = ignore_missing_keys
         
     def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:                
+        if self.ignore_missing_keys:
+            padding_keys, padding_values = [], []
+            for padding_key, padding_value in zip(self.padding_keys, self.padding_values):
+                if padding_key in batch:
+                    padding_keys.append(padding_key)
+                    padding_values.append(padding_values)
+            
+            self.padding_keys = padding_keys
+            self.padding_values = padding_values
+        
         max_length_key = self.padding_keys[0]
         lengths = [
             len(sequence) for sequence in batch[max_length_key]
