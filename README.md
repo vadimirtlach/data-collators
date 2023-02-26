@@ -16,7 +16,7 @@ Overall, the pretraining library is a comprehensive and efficient solution for p
 ...
 
 ## TODO
-- [ ] HuggingFace Transformers Data Collators wrappers
+- [ ] HuggingFace Transformers Data Collators wrappers (DataCollatorWithPadding, DataCollatorForTokenClassification, DataCollatorForSeq2Seq, DataCollatorForLanguageModeling, DataCollatorForWholeWordMask, DataCollatorForSOP, DataCollatorForPermutationLanguageModeling)
 - [ ] Extend set of hyperparameters for Masked Language - [ ] Modeling: https://arxiv.org/abs/2202.08005
 - [ ] Permutation Language Modeling
 - [ ] Whole Word Masking
