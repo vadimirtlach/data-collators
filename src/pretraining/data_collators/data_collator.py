@@ -14,7 +14,9 @@ class DataCollator:
         gathered_batch = gather_batch(batch)
         
         # applying
-        gathered_batch = super().apply(gathered_batch)
+        if issubclass(self, DataCollator):
+            gathered_batch = super().apply(gathered_batch)
+
         gathered_batch = self.apply(gathered_batch)
 
         # setting data types

@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from typing import Any, List, Optional, Dict
+from typing import Any, List, Optional, Dict, Union
 
 
 def pad_sequence(sequence: Any, 
@@ -69,3 +69,25 @@ def get_probability_indices(inputs: torch.Tensor, probability: float) -> torch.T
      indices = torch.bernoulli(probability_matrix).bool()
 
      return indices
+
+
+def prepare_sequence_and_label_for_causal_language_modeling(sequence: List[Union[str, int]], 
+                                                            context_window: int = 128, 
+                                                            bos_token: Union[str, int] = 1) -> List[List[Union[str, int]]]:
+    samples = []
+    for token_index in range(2, len(sequence) - 1):
+        start_index = max(token_index - context_window, 0)
+        end_index = min(len(sequence) - 1, token_index)
+
+        sequence_ = sequence[start_index:end_index]
+        
+        if bos_token not in sequence_:
+            sequence_ = [bos_token] + sequence_[:-1]
+            end_index -= 1
+            
+        label = sequence[end_index]
+        
+        sample = (sequence_, label)
+        samples.append(sample)
+        
+    return samples
