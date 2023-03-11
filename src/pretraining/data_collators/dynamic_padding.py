@@ -9,6 +9,7 @@ class DynamicPaddingDataCollator(DataCollator):
     def __init__(self, 
                  padding_keys: List[str], 
                  padding_values: List[str], 
+                 max_length_key: str,
                  padding_side: str = "right", 
                  pad_to_multiple_of: Optional[int] = None,
                  ignore_missing_keys: bool = True,
@@ -16,11 +17,12 @@ class DynamicPaddingDataCollator(DataCollator):
         super().__init__()
         self.padding_keys = padding_keys
         self.padding_values = padding_values
+        self.max_length_key = max_length_key
         self.padding_side = padding_side
         self.pad_to_multiple_of = pad_to_multiple_of
         self.ignore_missing_keys = ignore_missing_keys
         
-    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:                
+    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:                        
         if self.ignore_missing_keys:
             padding_keys, padding_values = [], []
             for padding_key, padding_value in zip(self.padding_keys, self.padding_values):
@@ -31,10 +33,10 @@ class DynamicPaddingDataCollator(DataCollator):
             self.padding_keys = padding_keys
             self.padding_values = padding_values
         
-        max_length_key = self.padding_keys[0]
         lengths = [
-            len(sequence) for sequence in batch[max_length_key]
+            len(sequence) for sequence in batch[self.max_length_key]
         ]
+
         max_length = max(lengths)
         
         for padding_key, padding_value in zip(self.padding_keys, self.padding_values):

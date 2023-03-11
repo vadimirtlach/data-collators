@@ -14,15 +14,17 @@ class DataCollator:
         gathered_batch = gather_batch(batch)
         
         # applying
-        if issubclass(self, DataCollator):
+        try:
             gathered_batch = super().apply(gathered_batch)
+        except AttributeError:
+            pass
 
         gathered_batch = self.apply(gathered_batch)
 
         # setting data types
         example_sample = batch[0]
         for key, value in example_sample.items():
-            if key in gather_batch:
+            if key in gathered_batch:
                 if not isinstance(value, str) and value is not None:
                     values = gathered_batch[key]
                     if isinstance(value, torch.Tensor):

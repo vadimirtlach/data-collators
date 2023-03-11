@@ -43,7 +43,7 @@ def gather_batch(batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
             if key not in gathered_batch:
                 gathered_batch[key] = []
                 
-        gathered_batch[key].append(value)
+            gathered_batch[key].append(value)
     
     return gathered_batch
 
