@@ -8,13 +8,15 @@ from .utilities import get_probability_indices
 
 
 class ReplacedTokenDetectionDataCollator(DynamicPaddingDataCollator):
-    def __init__(self, 
-                 input_key: str, 
-                 label_key: str, 
-                 tokenizer: PreTrainedTokenizer, 
-                 special_tokens_mask_key: str = "special_tokens_mask", 
-                 replace_token_probability: float = 0.15, 
-                 **args):
+    def __init__(
+        self, 
+        input_key: str, 
+        label_key: str, 
+        tokenizer: PreTrainedTokenizer, 
+        special_tokens_mask_key: str = "special_tokens_mask", 
+        replace_token_probability: float = 0.15, 
+        **args,
+    ):
         super().__init__(**args)
         
         self.input_key = input_key

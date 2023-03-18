@@ -17,17 +17,19 @@ class SpanMaskingDataCollator(DynamicPaddingDataCollator):
         https://github.com/rbiswasfc/kaggle-feedback-effectiveness-3rd-place-solution/blob/main/code/tools/fpe_span_mlm.py
     """
     
-    def __init__(self, 
-                 input_key: str, 
-                 label_key: str, 
-                 tokenizer: PreTrainedTokenizer, 
-                 ignore_index: int = -100, 
-                 min_span_length: int = 1, 
-                 max_span_length: int = 10, 
-                 special_tokens_mask_key: str = "special_tokens_mask", 
-                 span_masking_probability: float = 0.15, 
-                 length_probability: float = 0.2, 
-                 **args):
+    def __init__(
+        self, 
+        input_key: str, 
+        label_key: str, 
+        tokenizer: PreTrainedTokenizer, 
+        ignore_index: int = -100, 
+        min_span_length: int = 1, 
+        max_span_length: int = 10, 
+        special_tokens_mask_key: str = "special_tokens_mask", 
+        span_masking_probability: float = 0.15, 
+        length_probability: float = 0.2, 
+        **args,
+    ):
         super().__init__(**args)
         
         self.input_key = input_key

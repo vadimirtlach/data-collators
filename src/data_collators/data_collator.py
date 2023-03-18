@@ -2,10 +2,14 @@ import torch
 import numpy as np
 from typing import Dict, Any, List
 
-from .utilities import gather_batch
+from .utilities import gather_batch, convert_word_from_singular_to_plural
 
 
 class DataCollator:
+    def __init__(self, convert_singular_to_plural:bool=False, plural_prefix: str="all_"):
+        self.convert_singular_to_plural = convert_singular_to_plural
+        self.plural_prefix = plural_prefix
+
     def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
         return batch
     
@@ -33,5 +37,15 @@ class DataCollator:
                         values = torch.stack(np.stack(values))
 
                     gathered_batch[key] = torch.tensor(values)
+
+        # converting singular to plural form
+        if self.convert_singular_to_plural:
+            for key in gathered_batch.keys():
+                key_plural_form = convert_word_from_singular_to_plural(
+                    word=key, 
+                    plural_prefix=self.plural_prefix,
+                )
+                gathered_batch[key_plural_form] = gathered_batch.pop(key)
+    
 
         return gathered_batch

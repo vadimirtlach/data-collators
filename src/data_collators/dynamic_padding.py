@@ -6,15 +6,17 @@ from .utilities import pad_sequence
 
 
 class DynamicPaddingDataCollator(DataCollator):    
-    def __init__(self, 
-                 padding_keys: List[str], 
-                 padding_values: List[str], 
-                 max_length_key: str,
-                 padding_side: str = "right", 
-                 pad_to_multiple_of: Optional[int] = None,
-                 ignore_missing_keys: bool = True,
-                ):
-        super().__init__()
+    def __init__(
+        self, 
+        padding_keys: List[str], 
+        padding_values: List[str], 
+        max_length_key: str,
+        padding_side: str = "right", 
+        pad_to_multiple_of: Optional[int] = None,
+        ignore_missing_keys: bool = True,
+        **args,
+    ):
+        super().__init__(**args)
         self.padding_keys = padding_keys
         self.padding_values = padding_values
         self.max_length_key = max_length_key

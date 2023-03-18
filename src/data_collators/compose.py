@@ -2,7 +2,7 @@ from typing import Dict, List, Any, Callable
 
 
 class Compose:
-    def __init__(self, data_colllators: List[Callable[[Any], Any]] = []):
+    def __init__(self, data_colllators: List[Callable[[Any], Any]]=list):
         self.data_collators = data_colllators
 
     def __call__(self, batch: Dict[str, List[Any]]) -> Any:

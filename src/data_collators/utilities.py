@@ -1,14 +1,16 @@
 import torch
 import numpy as np
 from typing import Any, List, Optional, Dict, Union
+import re
 
 
-def pad_sequence(sequence: Any, 
-                 max_length: int, 
-                 padding_value: int = -1, 
-                 padding_side: str = "right",
-                 pad_to_multiple_of: Optional[int] = None,
-                 ) -> torch.Tensor:
+def pad_sequence(
+    sequence: Any, 
+    max_length: int, 
+    padding_value: int = -1, 
+    padding_side: str = "right",
+    pad_to_multiple_of: Optional[int] = None,
+) -> torch.Tensor:
     
     sequence = to_list(sequence)
     sequence_length = len(sequence)
@@ -51,10 +53,12 @@ def gather_batch(batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
 def normalize(x: np.ndarray) -> np.ndarray:
     return x / np.sum(x)
 
-def geometric_distribution(lower_bound: int, 
-                           upper_bound: int, 
-                           p: float = 0.5, 
-                           return_values: bool = False) -> np.ndarray:
+def geometric_distribution(
+    lower_bound: int, 
+    upper_bound: int, 
+    p: float = 0.5, 
+    return_values: bool = False,
+) -> np.ndarray:
     values = np.array(list(range(lower_bound, upper_bound + 1)))
     distribution = p * (1 - p) ** (values - lower_bound)
     distribution = normalize(distribution)
@@ -70,10 +74,24 @@ def get_probability_indices(inputs: torch.Tensor, probability: float) -> torch.T
 
      return indices
 
+def convert_word_from_singular_to_plural(word: str, plural_prefix: Optional[str] = None) -> str:
+    plural_form = word
+    if re.search("[sxz]$", word) or re.search("[^aeioudgkprt]h$", word):
+        plural_form = re.sub("$", "es", word)
+    elif re.search("[aeiou]y$", word):
+        plural_form = re.sub("y$", "ies", word)
+    elif not word.endswith("s"):
+        plural_form = word + "s"
+    elif plural_prefix is not None:
+        plural_form = f"{plural_prefix}word"
 
-def prepare_sequence_and_label_for_causal_language_modeling(sequence: List[Union[str, int]], 
-                                                            context_window: int = 128, 
-                                                            bos_token: Union[str, int] = 1) -> List[List[Union[str, int]]]:
+    return plural_form
+
+def prepare_sequence_and_label_for_causal_language_modeling(
+    sequence: List[Union[str, int]], 
+    context_window: int = 128, 
+    bos_token: Union[str, int] = 1,
+) -> List[List[Union[str, int]]]:
     samples = []
     for token_index in range(2, len(sequence) - 1):
         start_index = max(token_index - context_window, 0)
