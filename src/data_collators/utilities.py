@@ -49,6 +49,34 @@ def gather_batch(batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
     
     return gathered_batch
 
+def set_batch_dtypes(
+    batch: Dict[str, List[Any]], 
+    ignore_keys: Optional[List[str]]=None,
+) -> Dict[str, Any]:
+    if ignore_keys is None:
+        ignore_keys = []
+    
+    example_sample = batch[0]
+    for key, value in example_sample.items():
+        does_set_value_dtype = (
+            not isinstance(value, str) and 
+            (value is not None) and 
+            (value not in ignore_keys)
+        )
+
+        if does_set_value_dtype:
+            values = batch[key]
+            if isinstance(value, torch.Tensor):
+                values = torch.stack(values)
+            elif isinstance(value, np.ndarray):
+                values = np.stack(values)
+
+            if not isinstance(values, torch.Tensor):
+                values = torch.tensor(values)
+
+            batch[key] = values
+
+    return batch
 
 def normalize(x: np.ndarray) -> np.ndarray:
     return x / np.sum(x)
