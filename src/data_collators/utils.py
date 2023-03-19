@@ -38,28 +38,28 @@ def to_list(inputs: Any) -> List[Any]:
 
     return list(inputs)
 
-def gather_batch(batch: List[Dict[str, Any]], batch_wise:bool=False) -> Dict[str, List[Any]]:
-    gathered_batch = {}
-    for sample in batch:
+def gather(data: List[Dict[str, Any]], batch_wise:bool=False) -> Dict[str, List[Any]]:
+    gathered_data = {}
+    for sample in data:
         for key, value in sample.items():
-            if key not in gathered_batch:
-                gathered_batch[key] = []
+            if key not in gathered_data:
+                gathered_data[key] = []
             
             if batch_wise:
-                gathered_batch[key].extend(value)
+                gathered_data[key].extend(value)
             else:
-                gathered_batch[key].append(value)
+                gathered_data[key].append(value)
     
-    return gathered_batch
+    return gathered_data
 
-def set_batch_dtypes(
-    batch: Dict[str, List[Any]], 
+def set_dtypes(
+    data: Dict[str, List[Any]], 
     ignore_keys: Optional[List[str]]=None,
 ) -> Dict[str, Any]:
     if ignore_keys is None:
         ignore_keys = []
     
-    for key, values in batch.items():
+    for key, values in data.items():
         example_value = values[0]
 
         does_set_value_dtype = (
@@ -82,9 +82,9 @@ def set_batch_dtypes(
                 print(error)
                 print(values)
 
-            batch[key] = values
+            data[key] = values
 
-    return batch
+    return data
 
 def normalize(x: np.ndarray) -> np.ndarray:
     return x / np.sum(x)

@@ -6,7 +6,7 @@ import copy
 from typing import Dict, List, Any
 
 from .dynamic_padding import DynamicPaddingDataCollator
-from .utilities import geometric_distribution, get_probability_indices
+from .utils import geometric_distribution, get_probability_indices
 
 
 class SpanMaskingDataCollator(DynamicPaddingDataCollator):

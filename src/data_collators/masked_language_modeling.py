@@ -4,7 +4,7 @@ import copy
 from typing import List, Any, Dict
 
 from .dynamic_padding import DynamicPaddingDataCollator
-from .utilities import get_probability_indices
+from .utils import get_probability_indices
 
 
 class MaskedLanguageModelingDataCollator(DynamicPaddingDataCollator):

@@ -2,7 +2,7 @@ import torch
 from typing import List, Optional, Dict, Any
 
 from .data_collator import DataCollator
-from .utilities import pad_sequence
+from .utils import pad_sequence
 
 
 class DynamicPaddingDataCollator(DataCollator):    

@@ -1,8 +1,8 @@
 from typing import Dict, Any, List, Optional
 
-from .utilities import (
-    gather_batch, 
-    set_batch_dtypes, 
+from .utils import (
+    gather, 
+    set_dtypes, 
     convert_word_from_singular_to_plural,
 )
 
@@ -26,7 +26,7 @@ class DataCollator:
     
     def __call__(self, batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
         # gathering
-        batch = gather_batch(batch)
+        batch = gather(batch)
         
         # applying
         try:
@@ -37,7 +37,7 @@ class DataCollator:
         batch = self.apply(batch)
 
         # setting data types
-        batch = set_batch_dtypes(batch, ignore_keys=self.ignore_keys)
+        batch = set_dtypes(batch, ignore_keys=self.ignore_keys)
 
         # converting singular to plural form
         if self.convert_singular_to_plural:
