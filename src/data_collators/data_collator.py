@@ -10,13 +10,16 @@ from .utilities import (
 class DataCollator:
     def __init__(
         self, 
-        ignore_keys:Optional[List[str]]=None, 
+        ignore_keys:Optional[List[str]]=[], 
         convert_singular_to_plural:bool=False, 
         plural_prefix: str="all_",
     ):
         self.convert_singular_to_plural = convert_singular_to_plural
         self.plural_prefix = plural_prefix
         self.ignore_keys = ignore_keys
+
+        if self.ignore_keys is None:
+            self.ignore_keys = []
 
     def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
         return batch
@@ -38,7 +41,8 @@ class DataCollator:
 
         # converting singular to plural form
         if self.convert_singular_to_plural:
-            for key in batch.keys():
+            keys = list(batch.keys())
+            for key in keys:
                 if key not in self.ignore_keys:
                     key_plural_form = convert_word_from_singular_to_plural(
                         word=key, 

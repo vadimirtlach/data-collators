@@ -38,14 +38,17 @@ def to_list(inputs: Any) -> List[Any]:
 
     return list(inputs)
 
-def gather_batch(batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
+def gather_batch(batch: List[Dict[str, Any]], batch_wise:bool=False) -> Dict[str, List[Any]]:
     gathered_batch = {}
     for sample in batch:
         for key, value in sample.items():
             if key not in gathered_batch:
                 gathered_batch[key] = []
-                
-            gathered_batch[key].append(value)
+            
+            if batch_wise:
+                gathered_batch[key].extend(value)
+            else:
+                gathered_batch[key].append(value)
     
     return gathered_batch
 
@@ -56,22 +59,28 @@ def set_batch_dtypes(
     if ignore_keys is None:
         ignore_keys = []
     
-    for key, value in batch.items():
+    for key, values in batch.items():
+        example_value = values[0]
+
         does_set_value_dtype = (
-            not isinstance(value, str) and 
-            (value is not None) and 
-            (value not in ignore_keys)
+            not isinstance(example_value, str) and 
+            (example_value is not None) and 
+            (key not in ignore_keys)
         )
 
         if does_set_value_dtype:
-            values = batch[key]
-            if isinstance(value, torch.Tensor):
-                values = torch.stack(values)
-            elif isinstance(value, np.ndarray):
-                values = torch.stack(np.stack(values))
+            try:
+                if not isinstance(values, torch.Tensor) and isinstance(example_value, torch.Tensor):
+                    values = torch.stack(values)
+                elif isinstance(example_value, np.ndarray):
+                    values = torch.stack(np.stack(values))
 
-            if not isinstance(values, torch.Tensor):
-                values = torch.tensor(values)
+                if not isinstance(values, torch.Tensor):
+                    values = torch.tensor(values)
+            except Exception as error:
+                print(key)
+                print(error)
+                print(values)
 
             batch[key] = values
 
