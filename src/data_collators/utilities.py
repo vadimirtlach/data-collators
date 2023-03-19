@@ -68,7 +68,7 @@ def set_batch_dtypes(
             if isinstance(value, torch.Tensor):
                 values = torch.stack(values)
             elif isinstance(value, np.ndarray):
-                values = np.stack(values)
+                values = torch.stack(np.stack(values))
 
             if not isinstance(values, torch.Tensor):
                 values = torch.tensor(values)
