@@ -56,8 +56,7 @@ def set_batch_dtypes(
     if ignore_keys is None:
         ignore_keys = []
     
-    example_sample = batch[0]
-    for key, value in example_sample.items():
+    for key, value in batch.items():
         does_set_value_dtype = (
             not isinstance(value, str) and 
             (value is not None) and 
