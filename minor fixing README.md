@@ -38,7 +38,7 @@ dataloader = DataLoader(
     dataset=dataset, 
     batch_size=16,
     shuffle=True,
-    collate_fn=self.collate_fn, 
+    collate_fn=collator,
 )
 
 ```
