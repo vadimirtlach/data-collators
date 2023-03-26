@@ -160,6 +160,16 @@ class Model(LightningModule):
 - Offers pre-implemented data collators for some Deep Learning tasks.
 - Includes utilities for converting dictionary keys from singular to plural, making the transition from sample-wise names to batch-wise easier.
 - Supports Dynamic Padding of sequences to optimize batch size and improve training efficiency.
+- The HuggingFace Data Collators Wrappers
+
+### HuggingFace Data Collators Wrappers
+The HuggingFace Data Collators Wrappers provide a convenient way to move from using HuggingFace Data Collators to the Data Collators library with only a few minor changes to your existing code. 
+
+Here are a few examples:
+
+```py
+in progress...
+```
 
 ### Pre-implemented data collators
 
