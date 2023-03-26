@@ -81,6 +81,13 @@ class SDIPDataCollator(DataCollator):
 
 This Data Collator was used in the [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts) competition.
 
+### Features
+
+- Provides a flexible and easy-to-use API for creating custom data collators.
+- Offers pre-implemented data collators for some Deep Learning tasks.
+- Includes utilities for converting dictionary keys from singular to plural, making the transition from sample-wise names to batch-wise easier.
+- Supports Dynamic Padding of sequences to optimize batch size and improve training efficiency.
+
 ### Pre-implemented data collators
 
 The Data Collators library provides pre-implemented data collators for some Deep Learning tasks.
