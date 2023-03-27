@@ -196,3 +196,19 @@ We welcome and encourage contributions to Data Collators! Whether it's a bug fix
 
 ### License
 This repository is licensed under the Apache 2.0 License, which means that you are free to use, modify, and distribute the code as long as you adhere to the terms and conditions of the license. Please see the LICENSE file for more details.
+
+### TO-DO
+
+- [ ] PyPi installation
+- [ ] Processing list-like outputs
+- [ ] Provide examples
+- [ ] Tests
+- [ ] `WholeWordMaskingDataCollator`
+- [ ] `TranslationLanguageModelingDataCollator`
+- [ ] `PermutationLanguageModelingDataCollator`
+- [ ] `ExtendedMaskedLanguageModelingDataCollator` - https://arxiv.org/abs/2202.08005
+- [ ] Stride-Former Wrapper - https://github.com/nbroad1881/strideformer
+- [ ] Automatic sequences detection
+- [ ] HuggingFace Transformers Data Collators Wrappers: DefaultDataCollator, DataCollatorWithPadding, DataCollatorForTokenClassification, DataCollatorForSeq2Seq, DataCollatorForLanguageModeling, DataCollatorForWholeWordMask, DataCollatorForPermutationLanguageModeling.
+- [ ] Typization
+- [ ] Doc-strings
