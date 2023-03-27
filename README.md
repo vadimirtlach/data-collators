@@ -20,6 +20,15 @@ python setup.py install
 
 This will install the data-collators library on your machine, allowing you to use it in your projects.
 
+### Features
+
+- Provides a flexible and easy-to-use API for creating custom data collators.
+- Offers pre-implemented data collators for some Deep Learning tasks.
+- Includes utilities for converting dictionary keys from singular to plural, making the transition from sample-wise names to batch-wise easier.
+- Supports Dynamic Padding of sequences to optimize batch size and improve training efficiency.
+- HuggingFace Data Collators Wrappers make moving from HuggingFace Data Collators to Data Collators more easily with only minor changes.
+- The flexibility of the Data Collators library's API allows for seamless integration with popular frameworks like Lightning.
+
 ### Usage
 
 Using Data Collators is similar to using the basic PyTorch `collate_fn` API. However, the library provides additional flexibility and convenience by abstracting away many of the low-level details involved in collating data into batches.
@@ -82,16 +91,16 @@ class SDIPDataCollator(DataCollator):
 This Data Collator was used in the [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts) competition.
 
 ### Lightning with Data Collators
-Lightning is a popular PyTorch framework for organizing Deep Learning code into a standardized format. Data Collators can be easily integrated into Lightning projects to streamline the process of gathering outputs produced by `training_step`, `validation_step`, `predict_step`, and other methods of `LightningModule`. This is achieved using the `gather` and `set_dtypes` utilities, which allow for efficient and consistent conversion of output data to the desired format.
+Lightning is a popular PyTorch framework for organizing Deep Learning code into a standardized format. Data Collators and its utilities can be easily integrated into Lightning projects to streamline the process of gathering outputs produced by `training_step`, `validation_step`, `predict_step`, and other methods of `LightningModule`. This is achieved using the `gather` and `set_dtypes` utilities, which allow for efficient and consistent conversion of output data to the desired format.
 
-```py
+```diff
 from pytorch_lightning import LightningModule
 from data_collators import DataCollator
 from data_collators.utils import gather, set_dtypes
 
 
 class Model(LightningModule):
-	def validation_step(self, batch, batch_index):
+    def validation_step(self, batch, batch_index):
         inputs = batch["inputs"]
         labels = batch["labels"]
         
@@ -104,11 +113,14 @@ class Model(LightningModule):
         }
     
     def validation_epoch_end(self, validation_outputs):
-        validation_outputs = gather(validation_outputs, batch_wise=True)
-        validation_outputs = set_dtypes(validation_outputs)
+-	outputs = torch.cat([output["outputs"] for output in validation_outputs], dim=0)
+-       labels = torch.cat([output["labels"] for output in validation_outputs], dim=0)
+	
++       validation_outputs = gather(validation_outputs, batch_wise=True)
++       validation_outputs = set_dtypes(validation_outputs)
         
-        outputs = validation_outputs["outputs"]
-        labels = validation_outputs["labels"]
++ 	outputs = validation_outputs["outputs"]
++       labels = validation_outputs["labels"]
 
         # losses, metrics, logging...
 ```
@@ -116,21 +128,21 @@ class Model(LightningModule):
 #### Lightning 2.0+
 Lightning has recently launched version 2.0, which resulted in some methods being renamed and certain staff being removed. Consequently, users may need to write their own necessary staff. Here is the Lightning 2.0 version of the code mentioned above.
 
-```py
+```diff
 from lightning import LightningModule
 from data_collators import DataCollator
 from data_collators.utils import gather, set_dtypes
 
 
 class Model(LightningModule):
-	def __init__(self, ...): 
-		super().__init__()
+    def __init__(self, ...): 
+        super().__init__()
 
-		# initializing...
+        # initializing...
 
-		self.validation_outputs = []
+        self.validation_outputs = []
 
-	def validation_step(self, batch, batch_index):
+    def validation_step(self, batch, batch_index):
         inputs = batch["inputs"]
         labels = batch["labels"]
         
@@ -145,22 +157,17 @@ class Model(LightningModule):
 	 self.validation_outputs.append(validation_step_output)
     
     def on_validation_epoch_end(self):
-        self.validation_outputs = gather(self.validation_outputs, batch_wise=True)
-        self.validation_outputs = set_dtypes(self.validation_outputs)
+-   	outputs = torch.cat([output["outputs"] for output in self.validation_outputs], dim=0)
+-       labels = torch.cat([output["labels"] for output in self.validation_outputs], dim=0)
+    
++       self.validation_outputs = gather(self.validation_outputs, batch_wise=True)
++       self.validation_outputs = set_dtypes(self.validation_outputs)
         
-        outputs = self.validation_outputs["outputs"]
-        labels = self.validation_outputs["labels"]
++       outputs = self.validation_outputs["outputs"]
++       labels = self.validation_outputs["labels"]
 
         # losses, metrics, logging...
 ```
-
-### Features
-
-- Provides a flexible and easy-to-use API for creating custom data collators.
-- Offers pre-implemented data collators for some Deep Learning tasks.
-- Includes utilities for converting dictionary keys from singular to plural, making the transition from sample-wise names to batch-wise easier.
-- Supports Dynamic Padding of sequences to optimize batch size and improve training efficiency.
-- The HuggingFace Data Collators Wrappers
 
 ### HuggingFace Data Collators Wrappers
 The HuggingFace Data Collators Wrappers provide a convenient way to move from using HuggingFace Data Collators to the Data Collators library with only a few minor changes to your existing code. 
@@ -168,7 +175,7 @@ The HuggingFace Data Collators Wrappers provide a convenient way to move from us
 Here are a few examples:
 
 ```py
-in progress...
+soon...
 ```
 
 ### Pre-implemented data collators
