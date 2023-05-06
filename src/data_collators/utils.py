@@ -83,9 +83,6 @@ def set_dtypes(
             elif isinstance(example_value, np.ndarray):
                 values = torch.stack(np.stack(values))
 
-            if not isinstance(values, torch.Tensor):
-                values = torch.tensor(values)
-
         data[key] = values
 
     return data
