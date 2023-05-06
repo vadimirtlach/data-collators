@@ -30,7 +30,7 @@ class MaskedLanguageModelingDataCollator(DynamicPaddingDataCollator):
         if not (0.0 <= masking_probability <= 1.0):
             raise ValueError(f"`masking_probability`")
     
-    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
+    def collate(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
         inputs = batch[self.input_key]
         labels = copy.deepcopy(inputs)
 
@@ -50,7 +50,6 @@ class MaskedLanguageModelingDataCollator(DynamicPaddingDataCollator):
         
         # creating label
         labels[~masked_indices] = self.ignore_index
-
 
         batch.update({
             self.input_key: inputs,

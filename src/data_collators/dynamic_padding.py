@@ -1,5 +1,5 @@
 import torch
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 
 from .data_collator import DataCollator
 from .utils import pad_sequence
@@ -8,41 +8,52 @@ from .utils import pad_sequence
 class DynamicPaddingDataCollator(DataCollator):    
     def __init__(
         self, 
-        padding_keys: List[str], 
-        padding_values: List[str], 
-        max_length_key: str,
+        mapping: Dict[str, Any],
+        max_length: Optional[Union[str, int]] = None,
         padding_side: str = "right", 
         pad_to_multiple_of: Optional[int] = None,
         ignore_missing_keys: bool = True,
         **args,
     ):
         super().__init__(**args)
-        self.padding_keys = padding_keys
-        self.padding_values = padding_values
-        self.max_length_key = max_length_key
+
+        self.mapping = mapping
+        self.max_length = max_length
         self.padding_side = padding_side
         self.pad_to_multiple_of = pad_to_multiple_of
         self.ignore_missing_keys = ignore_missing_keys
-        
-    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:                        
-        if self.ignore_missing_keys:
-            padding_keys, padding_values = [], []
-            for padding_key, padding_value in zip(self.padding_keys, self.padding_values):
-                if padding_key in batch:
-                    padding_keys.append(padding_key)
-                    padding_values.append(padding_values)
-            
-            self.padding_keys = padding_keys
-            self.padding_values = padding_values
-        
-        lengths = [
-            len(sequence) for sequence in batch[self.max_length_key]
-        ]
 
-        max_length = max(lengths)
         
-        for padding_key, padding_value in zip(self.padding_keys, self.padding_values):
+    def get_max_length(self, sequences):
+        lengths = [len(sequence) for sequence in sequences]
+        return max(lengths)
+
+    def collate(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:                        
+        if self.ignore_missing_keys:
+            new_mapping = {}
+            for padding_key, padding_value in self.mapping.items():
+                if padding_key in batch:
+                    new_mapping[padding_key] = padding_value
+            
+            self.mapping = new_mapping
+        
+        if self.max_length is not None:
+            max_length = (
+                self.get_max_length(sequences=batch[self.max_length]) 
+                if isinstance(self.max_length, str) 
+                else self.max_length
+            )
+        
+        for padding_key, padding_value in self.mapping.items():
             sequences = batch[padding_key]
+
+            if self.max_length is None:
+                max_length = (
+                    self.get_max_length(sequences) 
+                    if isinstance(self.max_length, str) 
+                    else self.max_length
+                )
+        
             padded_sequences = [
                 pad_sequence(
                     sequence=sequence, 

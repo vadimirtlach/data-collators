@@ -45,7 +45,7 @@ class SpanMaskingDataCollator(DynamicPaddingDataCollator):
         if not (0.0 <= span_masking_probability <= 1.0):
             raise ValueError(f"`span_masking_probability`")
 
-    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
+    def collate(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:
         inputs = batch[self.input_key]
         labels = copy.deepcopy(inputs)
 
@@ -102,7 +102,6 @@ class SpanMaskingDataCollator(DynamicPaddingDataCollator):
         # creating label
         labels[~masked_indices] = self.ignore_index
 
-        
         batch.update({
             self.input_key: inputs,
             self.label_key: labels,

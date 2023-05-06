@@ -54,7 +54,7 @@ dataloader = DataLoader(
 
 ### Creating custom data collators
 
-The Data Collators library provides a flexible and easy-to-use API for creating custom data collators. To create a custom data collator, you simply need to subclass the `DataCollator` class and implement the `apply` method. For example:
+The Data Collators library provides a flexible and easy-to-use API for creating custom data collators. To create a custom data collator, you simply need to subclass the `DataCollator` class and implement the `collate` method. For example:
 
 ```py
 from sentence_transformers import SentenceTransformer
@@ -72,7 +72,7 @@ class SDIPDataCollator(DataCollator):
         
         self.embedding_model = SentenceTransformer(embedding_model_name_or_path, device=device)
     
-    def apply(self, batch):
+    def collate(self, batch):
         images = batch["image"]
          
         if "prompt" in batch:
@@ -116,8 +116,7 @@ class Model(LightningModule):
 -	outputs = torch.cat([output["outputs"] for output in validation_outputs], dim=0)
 -       labels = torch.cat([output["labels"] for output in validation_outputs], dim=0)
 	
-+       validation_outputs = gather(validation_outputs, batch_wise=True)
-+       validation_outputs = set_dtypes(validation_outputs)
++       validation_outputs = gather(validation_outputs, batch_wise=True, set_dtypes=True)
         
 + 	outputs = validation_outputs["outputs"]
 +       labels = validation_outputs["labels"]
@@ -160,8 +159,7 @@ class Model(LightningModule):
 -   	outputs = torch.cat([output["outputs"] for output in self.validation_outputs], dim=0)
 -       labels = torch.cat([output["labels"] for output in self.validation_outputs], dim=0)
     
-+       self.validation_outputs = gather(self.validation_outputs, batch_wise=True)
-+       self.validation_outputs = set_dtypes(self.validation_outputs)
++       self.validation_outputs = gather(self.validation_outputs, batch_wise=True, set_dtypes=True)
         
 +       outputs = self.validation_outputs["outputs"]
 +       labels = self.validation_outputs["labels"]

@@ -34,11 +34,16 @@ def to_list(inputs: Any) -> List[Any]:
     if isinstance(inputs, np.ndarray):
         inputs = inputs.tolist()
     elif isinstance(inputs, torch.Tensor):
-        inputs = inputs.detach().tolist()
+        inputs = inputs.to("cpu").detach().tolist()
 
     return list(inputs)
 
-def gather(data: List[Dict[str, Any]], batch_wise:bool=False) -> Dict[str, List[Any]]:
+def gather(
+    data: List[Dict[str, Any]], 
+    batch_wise:bool=False, 
+    set_dtypes: bool = False, 
+    ignore_keys: Optional[List[str]] = None,
+) -> Dict[str, List[Any]]:
     gathered_data = {}
     for sample in data:
         for key, value in sample.items():
@@ -50,12 +55,16 @@ def gather(data: List[Dict[str, Any]], batch_wise:bool=False) -> Dict[str, List[
             else:
                 gathered_data[key].append(value)
     
+    if set_dtypes:
+        gathered_data = set_dtypes(gathered_data, ignore_keys=ignore_keys)
+
     return gathered_data
 
 def set_dtypes(
     data: Dict[str, List[Any]], 
-    ignore_keys: Optional[List[str]]=None,
+    ignore_keys: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
+    
     if ignore_keys is None:
         ignore_keys = []
     
@@ -69,20 +78,15 @@ def set_dtypes(
         )
 
         if does_set_value_dtype:
-            try:
-                if not isinstance(values, torch.Tensor) and isinstance(example_value, torch.Tensor):
-                    values = torch.stack(values)
-                elif isinstance(example_value, np.ndarray):
-                    values = torch.stack(np.stack(values))
+            if not isinstance(values, torch.Tensor) and isinstance(example_value, torch.Tensor):
+                values = torch.stack(values)
+            elif isinstance(example_value, np.ndarray):
+                values = torch.stack(np.stack(values))
 
-                if not isinstance(values, torch.Tensor):
-                    values = torch.tensor(values)
-            except Exception as error:
-                print(key)
-                print(error)
-                print(values)
+            if not isinstance(values, torch.Tensor):
+                values = torch.tensor(values)
 
-            data[key] = values
+        data[key] = values
 
     return data
 

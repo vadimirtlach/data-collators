@@ -28,7 +28,7 @@ class ReplacedTokenDetectionDataCollator(DynamicPaddingDataCollator):
         if not (0.0 <= replace_token_probability <= 1.0):
             raise ValueError(f"`replace_token_probability`")
             
-    def apply(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:        
+    def collate(self, batch: Dict[str, List[Any]]) -> Dict[str, List[Any]]:        
         inputs = batch[self.input_key]
         labels = copy.deepcopy(inputs)
 
