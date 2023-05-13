@@ -91,12 +91,12 @@ class SDIPDataCollator(DataCollator):
 This Data Collator was used in the [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts) competition.
 
 ### Lightning with Data Collators
-Lightning is a popular PyTorch framework for organizing Deep Learning code into a standardized format. Data Collators and its utilities can be easily integrated into Lightning projects to streamline the process of gathering outputs produced by `training_step`, `validation_step`, `predict_step`, and other methods of `LightningModule`. This is achieved using the `gather` and `set_dtypes` utilities, which allow for efficient and consistent conversion of output data to the desired format.
+Lightning is a popular PyTorch framework for organizing Deep Learning code into a standardized format. Data Collators and its utilities can be easily integrated into Lightning projects to streamline the process of gathering outputs produced by `training_step`, `validation_step`, `predict_step`, and other methods of `LightningModule`. This is achieved using the `gather` util, which allow for efficient and consistent conversion of output data to the desired format.
 
 ```diff
 from pytorch_lightning import LightningModule
 from data_collators import DataCollator
-from data_collators.utils import gather, set_dtypes
+from data_collators.utils import gather
 
 
 class Model(LightningModule):
@@ -116,7 +116,7 @@ class Model(LightningModule):
 -	outputs = torch.cat([output["outputs"] for output in validation_outputs], dim=0)
 -       labels = torch.cat([output["labels"] for output in validation_outputs], dim=0)
 	
-+       validation_outputs = gather(validation_outputs, batch_wise=True, set_dtypes=True)
++       validation_outputs = gather(validation_outputs, batch_wise=True, does_set_dtypes=True)
         
 + 	outputs = validation_outputs["outputs"]
 +       labels = validation_outputs["labels"]
@@ -130,7 +130,7 @@ Lightning has recently launched version 2.0, which resulted in some methods bein
 ```diff
 from lightning import LightningModule
 from data_collators import DataCollator
-from data_collators.utils import gather, set_dtypes
+from data_collators.utils import gather
 
 
 class Model(LightningModule):
@@ -159,7 +159,7 @@ class Model(LightningModule):
 -   	outputs = torch.cat([output["outputs"] for output in self.validation_outputs], dim=0)
 -       labels = torch.cat([output["labels"] for output in self.validation_outputs], dim=0)
     
-+       self.validation_outputs = gather(self.validation_outputs, batch_wise=True, set_dtypes=True)
++       self.validation_outputs = gather(self.validation_outputs, batch_wise=True, does_set_dtypes=True)
         
 +       outputs = self.validation_outputs["outputs"]
 +       labels = self.validation_outputs["labels"]

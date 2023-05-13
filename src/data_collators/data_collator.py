@@ -26,7 +26,7 @@ class DataCollator:
     
     def __call__(self, batch: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
         # gathering
-        batch = gather(batch, set_dtypes=False)
+        batch = gather(batch, does_set_dtypes=False)
         
         # collating
         try:

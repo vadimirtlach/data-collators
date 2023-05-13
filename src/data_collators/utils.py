@@ -41,7 +41,7 @@ def to_list(inputs: Any) -> List[Any]:
 def gather(
     data: List[Dict[str, Any]], 
     batch_wise:bool=False, 
-    set_dtypes: bool = False, 
+    does_set_dtypes: bool = False, 
     ignore_keys: Optional[List[str]] = None,
 ) -> Dict[str, List[Any]]:
     gathered_data = {}
@@ -55,7 +55,7 @@ def gather(
             else:
                 gathered_data[key].append(value)
     
-    if set_dtypes:
+    if does_set_dtypes:
         gathered_data = set_dtypes(gathered_data, ignore_keys=ignore_keys)
 
     return gathered_data
